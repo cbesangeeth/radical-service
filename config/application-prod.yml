@@ -3,6 +3,4 @@ server.port: 8122
 spring:
   data:
     mongodb:
-      url: mongodb://radical:radical1@ds121980.mlab.com:21980/radical_db
-#      host: localhost
-#      port: 27017
+      url: mongodb://root:radical1@ds121980.mlab.com:21980/radical_db
