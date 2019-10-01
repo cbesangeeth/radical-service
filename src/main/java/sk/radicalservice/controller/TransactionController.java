@@ -1,7 +1,6 @@
 package sk.radicalservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -12,14 +11,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import sk.radicalservice.domain.Transaction;
 import sk.radicalservice.repository.TransactionRepository;
+import sk.radicalservice.service.TransactionService;
 
-import javax.websocket.server.PathParam;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class TransactionController {
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private TransactionService transactionService;
 
     @GetMapping(value = "/transactions")
     private List<Transaction> getAllTransactions() {
@@ -43,9 +46,10 @@ public class TransactionController {
         return transactionRepository.save(transaction);
     }
 
-//    @PatchMapping(value = "/transactions/{id}")
-//    private Transaction patchTransaction(@PathVariable(value = "id") String id, @RequestBody Transaction transaction){
-//        Transaction transaction1 = transactionRepository.findById(id).get();
-//        return transactionRepository.save(transaction);
-//    }
+    @PatchMapping(value = "/transactions/{id}")
+    private Transaction patchTransaction(@PathVariable(value = "id") String id,
+                                         @RequestBody Transaction transaction){
+
+        return transactionService.patchUpdateTransaction(transaction, id);
+    }
 }
