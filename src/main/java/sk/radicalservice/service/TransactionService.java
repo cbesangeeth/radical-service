@@ -2,6 +2,7 @@ package sk.radicalservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sk.radicalservice.common.APIResponse;
 import sk.radicalservice.domain.Transaction;
 import sk.radicalservice.repository.TransactionRepository;
 
@@ -31,5 +32,18 @@ public class TransactionService {
         }
 
         return transactionRepository.save(dbTransaction);
+    }
+
+    public APIResponse createTransaction(Transaction transaction) {
+
+        APIResponse apiResponse = new APIResponse();
+        //validate
+
+        // save
+        transaction = transactionRepository.insert(transaction);
+
+        // return
+        apiResponse.setData(transaction);
+        return apiResponse;
     }
 }

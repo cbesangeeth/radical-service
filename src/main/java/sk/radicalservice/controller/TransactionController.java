@@ -1,6 +1,7 @@
 package sk.radicalservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -9,13 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import sk.radicalservice.common.APIResponse;
 import sk.radicalservice.domain.Transaction;
 import sk.radicalservice.repository.TransactionRepository;
 import sk.radicalservice.service.TransactionService;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class TransactionController {
@@ -30,9 +30,11 @@ public class TransactionController {
     }
 
     @PostMapping(value = "/transaction")
-    private Transaction createTransaction(@RequestBody Transaction transaction) {
+    private ResponseEntity createTransaction(@RequestBody Transaction transaction) {
 
-        return transactionRepository.insert(transaction);
+        APIResponse apiResponse = transactionService.createTransaction(transaction);
+
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
     @DeleteMapping(value = "/transactions/{id}")
@@ -41,9 +43,13 @@ public class TransactionController {
         return "Deleted: "+ id;
     }
 
-    @PutMapping(value = "/transactions")
-    private Transaction updateTransaction(@RequestBody Transaction transaction){
-        return transactionRepository.save(transaction);
+    @Deprecated
+    @PutMapping(value = "/transactions/{id}")
+    private Transaction updateTransaction(@PathVariable(value = "id") String id,
+                                          @RequestBody Transaction transaction){
+        Transaction dbTransaction = transactionRepository.findById(id).get();
+        dbTransaction = transaction;
+        return transactionRepository.save(dbTransaction);
     }
 
     @PatchMapping(value = "/transactions/{id}")
@@ -51,5 +57,11 @@ public class TransactionController {
                                          @RequestBody Transaction transaction){
 
         return transactionService.patchUpdateTransaction(transaction, id);
+    }
+
+    @DeleteMapping(value = "/transactions/deleteAll")
+    private String deleteAllTransaction(){
+        transactionRepository.deleteAll();
+        return "Deleted all transactions";
     }
 }

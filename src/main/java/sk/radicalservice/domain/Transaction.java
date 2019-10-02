@@ -1,15 +1,18 @@
 package sk.radicalservice.domain;
 
-import org.bson.types.ObjectId;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.sql.Date;
+import sk.radicalservice.common.Auditable;
+import sk.radicalservice.common.DateTimeCustomDeserializer;
+import sk.radicalservice.common.DateTimeCustomSerializer;
 
 @Document(value = "Transactions")
-public class Transaction {
+public class Transaction extends Auditable<String> {
 
     @Id
     private String id;
@@ -17,14 +20,16 @@ public class Transaction {
     private String type;
     private Long amount;
     private String description;
-    private User user;
-    private Date transactionDate;
+//    private User user;
+    @JsonSerialize(using = DateTimeCustomSerializer.class)
+    @JsonDeserialize(using = DateTimeCustomDeserializer.class)
+    private DateTime transactionDate;
 
-    public Date getTransactionDate() {
+    public DateTime getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(Date transactionDate) {
+    public void setTransactionDate(DateTime transactionDate) {
         this.transactionDate = transactionDate;
     }
 
@@ -36,13 +41,13 @@ public class Transaction {
         this.description = description;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
 
     public String getId() {
         return id;
@@ -67,4 +72,5 @@ public class Transaction {
     public void setAmount(Long amount) {
         this.amount = amount;
     }
+
 }
