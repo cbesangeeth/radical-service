@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import sk.radicalservice.common.APIResponse;
 import sk.radicalservice.domain.Transaction;
+import sk.radicalservice.dto.TransactionDTO;
 import sk.radicalservice.repository.TransactionRepository;
 import sk.radicalservice.service.TransactionService;
 
@@ -25,16 +26,18 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @GetMapping(value = "/transactions")
-    private List<Transaction> getAllTransactions() {
-        return transactionRepository.findAll();
+    private ResponseEntity getAllTransactions() {
+
+        APIResponse response = transactionService.getTransactions();
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @PostMapping(value = "/transaction")
-    private ResponseEntity createTransaction(@RequestBody Transaction transaction) {
+    private ResponseEntity createTransaction(@RequestBody TransactionDTO transactionDTO) {
 
-        APIResponse apiResponse = transactionService.createTransaction(transaction);
+        APIResponse response = transactionService.createTransaction(transactionDTO);
 
-        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @DeleteMapping(value = "/transactions/{id}")
@@ -53,10 +56,12 @@ public class TransactionController {
     }
 
     @PatchMapping(value = "/transactions/{id}")
-    private Transaction patchTransaction(@PathVariable(value = "id") String id,
+    private ResponseEntity patchTransaction(@PathVariable(value = "id") String id,
                                          @RequestBody Transaction transaction){
 
-        return transactionService.patchUpdateTransaction(transaction, id);
+        APIResponse response = transactionService.patchUpdateTransaction(transaction, id);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @DeleteMapping(value = "/transactions/deleteAll")

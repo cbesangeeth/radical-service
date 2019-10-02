@@ -20,7 +20,6 @@ public class Transaction extends Auditable<String> {
     private String type;
     private Long amount;
     private String description;
-//    private User user;
     @JsonSerialize(using = DateTimeCustomSerializer.class)
     @JsonDeserialize(using = DateTimeCustomDeserializer.class)
     private DateTime transactionDate;
@@ -40,14 +39,6 @@ public class Transaction extends Auditable<String> {
     public void setDescription(String description) {
         this.description = description;
     }
-
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
 
     public String getId() {
         return id;
